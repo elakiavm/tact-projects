@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!--
+    Source:
+
+    https://mdbootstrap.com/docs/b4/jquery/forms/textarea/
+
+    https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_default&stacked=h
+
+    https://phppot.com/jquery/bouncing-ball-animation-using-jquery/
+
+    https://schier.co/blog/wait-for-user-to-stop-typing-using-javascript
+
+  -->
+<head>
+  <title>Serkinti</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://code.jquery.com/jquery-migrate-1.4.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #bouncing-ball {
+      /* height: 100px; */
+      position: absolute;
+      bottom: 0px;
+      left: 50%;
+      margin-left: -50px;
+    }
+    
+    #outterDiv {
+      height: 340px;
+      /* background: #36a094; */
+      position: relative;
+    }
+    
+    .banner-info {
+      padding: 15px;
+      color: #FFF;
+    }
+
+    .circle {
+      border-radius: 50%;
+      width: 250px;
+      height: 250px;
+      background:#ff8882;
+
+      /* background: gold; */
+      /* width: 40px;  */
+      /* height: 40px; */
+      border-radius: 50%;
+      display: flex; /* or inline-flex */
+      align-items: center; 
+      justify-content: center;
+  }
+  </style>
+</head>
+<body>
+
+<div class="jumbotron text-center" style="padding-top: 5px; padding-bottom: 20px;">
+  <h1>Serkinti</h1>
+  <p>Show off your vocabulary!</p> 
+</div>
+  
+<div class="container">
+  <h3>Players</h3>
+  <div class="row">
+    
+    <!-- Players' Input Box -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="exampleFormControlTextarea1" id="user_1_name"></label>
+        <input type="text" class="form-control rounded-0" name="" id="user_1_input">
+        <!-- <textarea class="form-control rounded-0" id="user_1_input" rows="10"></textarea> -->
+      </div>
+    </div>
+      <div class="col-md-6">
+        <div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1" id="user_2_name"></label>
+            <input type="text" class="form-control rounded-0" name="" id="user_2_input">
+            <!--   -->
+          </div>
+      </div>
+    </div>
+    <!--/ Players' Input Box -->
+
+    <div class="phone"></div><div class="tablet"></div><div class="small-desktop"></div><div class="large-desktop"></div>
+    <section class="canvas-holder">
+      <canvas id="balls"></canvas>
+    </section> 
+    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/90378/ball.png" width="1" height="1" class="hidden-image"> 
+  </div>
+</div>
+
+<!-- <script src="jquery-3.2.1.min.js"></script> -->
+<script>
+
+  var ser_users = [
+    "Ishita",
+    "Prakash"
+  ];
+
+  update_usernames();
+
+  function update_usernames(){
+    
+    //user_1_name
+    $('#user_1_name').html(ser_users[0]);
+    $('#user_2_name').html(ser_users[1]);
+  
+    $('#user_1_result_title').html(ser_users[0]);
+    $('#user_2_result_title').html(ser_users[1]);
+  }
+
+  var user_score = {
+    'user_1' : 0,
+    'user_2' : 0,
+  };
+
+	function bounce(bouncingCount, speed) {
+		var top = 200;
+		var speedRatio = speed / top;
+		var heightRatio = top / bouncingCount;
+
+		for (var i = 1; i <= bouncingCount; i++) {
+			$('#bouncing-ball').animate({
+				'bottom' : top
+			}, speed);
+			$('#bouncing-ball').animate({
+				'bottom' : 0
+			}, speed / 2);
+			top = top - (heightRatio);
+			speed = speedRatio * top;
+		}
+	}
+
+  var user_1_bank = [
+    
+  ];
+
+  var user_2_bank = [
+
+  ];
+
+  var random_colors = [
+    '#a4ebf3',
+    '#800080',
+    '#faf3e0',
+    '#f8f5f1',
+    '#a4ebf3',
+    ''
+  ];
+
+  function get_score(word){
+    var score = get_random_number(1, 10);
+
+    return score;
+  }
+
+  function show_user_1_bank_table(new_word){
+
+    user_1_bank.push(new_word);
+
+    // get and update score
+    var c_user_score = get_score(new_word);
+    user_score['user_1'] = parseInt(user_score['user_1']) + c_user_score;
+
+    content = '<table class="table">';
+    content += '<tbody>';
+
+    content += '<th>';
+    content += '<td> Total Score: '+user_score['user_1']+'</td>';
+    content += '</th>';  
+
+    for (index in user_1_bank){
+      
+      content += '<tr>';
+      content += '<td>'+user_1_bank[index]+'</td>';
+      content += '</tr>';
+    }
+    
+    // content += '<tr>';
+    // content += '<td>Jacob</td>';
+    // content += '</tr>';
+    // content += '<tr>';
+    // content += '<td>Larry</td>';
+    // content += '</tr>';
+    content += '</tbody>';
+    content += '</table>';
+    
+    $('#user_1_bank').html(content);
+  }
+
+  function show_user_2_bank_table(new_word){
+
+    user_2_bank.push(new_word);
+
+    // get and update score
+    var c_user_score = get_score(new_word);
+    user_score['user_2'] = parseInt(user_score['user_2']) + c_user_score;
+
+    content = '<table class="table">';
+    content += '<tbody>';
+
+    content += '<th>';
+    content += '<td> Total Score: '+user_score['user_2']+'</td>';
+    content += '</th>';  
+
+    // content += '<th>';
+    // content += '<td>'+user_2_bank[index]+'</td>';
+    // content += '</th>';  
+
+    for (index in user_2_bank){
+      
+      content += '<tr>';
+      content += '<td>'+user_2_bank[index]+'</td>';
+      content += '</tr>';
+    }
+
+    // content += '<tr>';
+    // content += '<td>Jacob</td>';
+    // content += '</tr>';
+    // content += '<tr>';
+    // content += '<td>Larry</td>';
+    // content += '</tr>';
+    content += '</tbody>';
+    content += '</table>';
+
+    $('#user_2_bank').html(content);
+  }
+
+	// $("#bouncing-ball").click(function() {
+	// 	// bounce(10, 500);
+	// });
+
+  // A $( document ).ready() block.
+  $( document ).ready(function() {
+    // bounce(3, 500);
+
+    $("#bouncing-ball").hide();
+  });
+
+
+  function hide_ball(){
+    $("#bouncing-ball").hide();
+  }
+
+  function show_ball(){
+    $("#bouncing-ball").show();
+  }
+
+
+  // User 1 Handler
+  // Get the input box
+  let dom_user_1_input = document.getElementById('user_1_input');
+
+  // Find User finished typing
+  // Init a timeout variable to be used below
+  let dom_user_1_timeout = null;
+
+  // Listen for keystroke events
+  dom_user_1_input.addEventListener('keyup', function (e) {
+      // Clear the timeout if it has already been set.
+      // This will prevent the previous task from executing
+      // if it has been less than <MILLISECONDS>
+      clearTimeout(dom_user_1_timeout);
+
+      // Make a new timeout set to go off in 1000ms (1 second)
+      dom_user_1_timeout = setTimeout(function () {
+          // console.log('Input Value:', textInput.value);
+
+          // user_1 value
+          add_user_text(1);
+
+      }, 1000);
+  });
+
+  // User 2 Handler
+  // Get the input box
+  let dom_user_2_input = document.getElementById('user_2_input');
+
+  // Find User finished typing
+  // Init a timeout variable to be used below
+  let dom_user_2_timeout = null;
+
+  // Listen for keystroke events
+  dom_user_2_input.addEventListener('keyup', function (e) {
+      // Clear the timeout if it has already been set.
+      // This will prevent the previous task from executing
+      // if it has been less than <MILLISECONDS>
+      clearTimeout(dom_user_2_timeout);
+
+      // Make a new timeout set to go off in 1000ms (1 second)
+      dom_user_2_timeout = setTimeout(function () {
+          // console.log('Input Value:', textInput.value);
+
+          // user_1 value
+          add_user_text(2);
+
+      }, 1000);
+  });
+
+  function get_random_number(min, max){
+    var rand_int = Math.floor(Math.random() * max);
+    // return ; 
+    // colog('random : '+rand_int);
+
+    return rand_int;
+  }
+
+  function change_bubble(){
+    var random_color = get_random_number(0, random_colors.length);
+    $('.circle').css("background-color", random_colors[random_color]);
+
+    var bubble_random_factor = get_random_number(1, 6);
+    
+    var bubble_width = (bubble_random_factor * 50);
+    var bubble_height = (bubble_random_factor * 50);
+    $('.circle').css("width", (bubble_width+'px'));
+    $('.circle').css("height", (bubble_height+'px'));
+
+    // colog(bubble_height);
+  }
+
+  function colog(content){
+    console.log(content);
+  }
+  
+  function add_user_text(user_index){
+    
+    var current_user_word = $('#user_'+user_index+'_input').val()
+    $("#box_text").html(current_user_word);
+    bounce(3, 500);
+    $("#bouncing-ball").show();
+
+    change_bubble();
+
+    // update user bank
+    if(user_index == 1){
+      show_user_1_bank_table(current_user_word);
+    } else if(user_index == 2){
+      show_user_2_bank_table(current_user_word);
+    }
+
+  }
+
+  $('#user_1_input').focus(function(){
+    $(this).val('');
+  });
+  $('#user_2_input').focus(function(){
+    $(this).val('');
+  });
+</script>
+<script src="index.js"></script>
+
+</body>
+</html>
+
+<!-- 
+ 
+  text-box - small - horizontal -- done
+  two containers - for balls --todo
+  separate balls 
+
+
+ -->
+
