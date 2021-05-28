@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    Source:
+
+    https://stackoverflow.com/questions/48033610/how-to-animate-sliding-in-text-form-left-to-right
+
+    https://jsfiddle.net/rs8dco4g/8/
+
+    https://www.bootstrapcdn.com/
+
+    https://getbootstrap.com/docs/4.0/components/buttons/
+
+  -->
+
+<head>
+  <title>Serkinti</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- <script src="jquery-3.2.1.min.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+
+
+  <style>
+    body {
+      overflow: hidden;
+    }
+
+    h1 {
+
+      margin-left: 4000px;
+      white-space: nowrap;
+      transition: margin 3s;
+    }
+
+    h2 {
+
+      margin-left: -400px;
+      width: 400px;
+      text-align: right;
+      white-space: nowrap;
+      transition: margin 3s;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div>
+    <h1 id="winner_slide_holder"></h1>
+  </div>
+
+  <div>
+    <button type="button" id="g_button" class="btn btn-primary">Primary</button>
+  </div>
+
+  
+  <script>
+
+    $(document).ready(function () {
+      // bounce(3, 500);
+
+      // console.log('test');
+
+      // show_winner('Soemthing');
+
+      $('button#g_button').click(function(){
+        show_winner('Soemthing');
+      });
+
+
+      function show_winner(winner_name){
+        
+        $('h1#winner_slide_holder').html(winner_name);
+
+        $("h1").css("margin-left", "10px");
+        // $("h2").css("margin-left", ($("body").width() - $("h2").width()) + "px");
+      }
+
+      
+    });
+
+
+  </script>
+
+
+</body>
+
+</html>

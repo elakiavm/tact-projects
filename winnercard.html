@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Winner Card</title>
+    <style>
+        #modal-flip-from-left {
+            top: 50%;
+            left: -200%;
+            transform: translate(-50%, -50%);
+        }
+
+        #modal-flip-from-left.show {
+            left: 50%;
+            animation: modal-flip-from-left-show 1s;
+        }
+
+        #modal-flip-from-left.hide {
+            left: -200%;
+            transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes modal-flip-from-left-show {
+            0% {
+                left: -200%;
+                transform: translate(-50%, -50%) rotateY(-180deg);
+            }
+
+            80% {
+                transform: translate(-50%, -50%) rotateY(-180deg);
+            }
+
+            90% {
+                left: 50%;
+                transform: translate(-50%, -50%) rotateY(-90deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotateY(0deg);
+            }
+        }
+
+        @keyframes bounce-out {
+            0% {
+                top: -200%;
+            }
+
+            25% {
+                top: 50%;
+            }
+
+            40% {
+                top: 35%;
+            }
+
+            55% {
+                top: 50%;
+            }
+
+            70% {
+                top: 42%;
+            }
+
+            85% {
+                top: 50%;
+            }
+
+            95% {
+                top: 48%;
+            }
+
+            100% {
+                top: 50%;
+            }
+        }
+
+        /* Extra stuff just to make the demo pretty. */
+        body {
+            padding: 50px 0;
+            color: #fff;
+            font-family: "Helvetica", serif;
+            font-size: 14px;
+            text-align: center;
+            line-height: 24px;
+            background: #070808;
+            perspective: 2500px;
+            transform-style: preserve-3d;
+        }
+        .modal h1 {
+            text-align: center;
+            font-size: 1em;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+/* 
+         h1 {
+            margin-bottom: 75px;
+            font-size: 55px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            margin: 0 0 25px;
+        }
+
+        footer {
+            margin: 75px 0 35px;
+        }
+
+        a {
+            color: #13A865;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #22e68e;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        form input {
+            margin-left: 10px;
+        }
+
+        form input[type=submit] {
+            margin: 0;
+            padding: 6px 20px;
+            color: #333;
+        }  */
+
+        .buttons {
+            width: 80%;
+            margin: 0 auto;
+            padding: 0;
+            list-style: none;
+            overflow: hidden;
+        }
+
+        .buttons li {
+            width: 50%;
+            margin: 0 auto 30px;
+            float: left;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #6C7994; 
+         }
+
+        .buttons button {
+            padding: 6px 20px;
+            background: #fff;
+            border: none;
+            border-radius: 4px;
+            color: #333;
+        } 
+
+        .modal-background {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(69, 69, 69, 0.7);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .modal-background.show {
+            display: block;
+            opacity: 1;
+            pointer-events: auto;
+            animation: fadein 0.8s;
+        }
+
+        .modal-background.hide {
+            animation: fadeout 0.8s;
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .modal {
+            position: absolute;
+            padding: 35px;
+            box-shadow: 0px 0px 8px 0px #333;
+            background: #875794;
+            color: #fff;
+            text-align: left;
+            transform-style: preserve-3d;
+        }
+
+        .modal .face-3d {
+            backface-visibility: hidden;
+        }
+
+        .modal .back-3d {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            content: "";
+            background: #875794;
+            transform: rotateY(180deg);
+        }
+
+
+
+        :root {
+            --border-color: #D7DBE3;
+            font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Open Sans", "Helvetica Neue", sans-serif;
+            --green: #0CD977;
+            --red: #FF1C1C;
+            --pink: #FF93DE;
+            --purple: #5767ED;
+            --yellow: #FFC61C;
+            --rotation: 0deg;
+        }
+
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .modal {
+            width: 300px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.16);
+            background-color: #fff;
+            border-radius: 0.25rem;
+            padding: 2rem;
+            z-index: 1;
+        }
+
+        .emoji {
+            display: block;
+            text-align: center;
+            font-size: 5rem;
+            line-height: 5rem;
+            transform: scale(0.5);
+            animation: scaleCup 2s infinite alternate;
+        }
+
+        @keyframes scaleCup {
+            0% {
+                transform: scale(0.6);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+       
+        .modal-btn {
+            display: block;
+            margin: 0 -2rem -2rem -2rem;
+            padding: 1rem 2rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            text-align: center;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 0 0 0.25rem 0.25rem;
+            background-color: var(--green);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+    
+        <ul class="buttons">
+
+            <li><button data-modal="modal-flip-from-left">Winner</button></li>
+
+        </ul>
+    </div>
+
+
+    <div class="modal-background"></div>
+
+
+    <div id="modal-flip-from-left" class="modal">
+        <div class="face-3d back-3d"></div>
+        <div class="face-3d front-3d">
+            <div class="wrapper">
+                <div class="modal">
+                    <!--     <span class="emoji">👏</span> -->
+                    <span class="emoji round">🏆</span>
+                    <a href="#" class="modal-btn"> Congratulation, YOU WON !!</a>
+                </div>
+          <!-- <h2>Login</h2>
+          <form action="#">
+            <label>
+              Username:
+              <input type="text" name="username" value="">
+            </label>
+            <label>
+              Password:
+              <input type="password" name="password" value="">
+            </label>
+            <input type="submit" value="Login">
+          </form> -->
+        </div>
+      </div>
+
+    <script>
+        $(document).ready(function () {
+
+
+            (function ($) {
+                $('.buttons button').on('click', function () {
+                    $('.modal-background').addClass('show').removeClass('hide');
+                    $('#' + $(this).data('modal')).addClass('show').removeClass('hide');
+                });
+
+                $('.modal-background').on('click', function (e) {
+                    e.preventDefault();
+                    $(this).removeClass('show').addClass('hide');
+                    $('.modal.show').removeClass('show').addClass('hide');
+                });
+
+                $('.modal').on('click', function (e) {
+                    e.preventDefault();
+                });
+            })(jQuery);
+
+        });
+    </script>
+
+
+
+
+</body>
+
+</html>

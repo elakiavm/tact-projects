@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <title>Document</title>
+  <style>
+    body,
+    .signin {
+
+      background-image: radial-gradient(circle farthest-corner at 10% 20%, rgba(243, 94, 131, 1) 17.1%, rgba(236, 212, 80, 1) 89.7%);
+      background-size: cover;
+      height: 90rem;
+      font-family: "Montserrat", sans-serif;
+      font-size: 14px;
+      letter-spacing: 1px;
+      background-repeat: no-repeat;
+      background-position: initial;
+      /* background-color:rgb(2, 2, 1); */
+      /* height: 50rem; */
+      /* color: rgb(184, 207, 99); */
+      /* background-image: url(/static/img/theme/ball-unscreen.gif); */
+      /* background-image: url(https://i.gifer.com/7tnD.gif); */
+       /*background-size: cover; */
+
+
+
+    }
+
+    .login {
+      position: relative;
+      height: 560px;
+      width: 405px;
+      margin: auto;
+      padding: 60px 60px;
+      background-image: linear-gradient(110.5deg, rgba(71, 114, 148, 1) 14.9%, rgba(149, 245, 211, 1) 77.9%);
+      background-repeat: no-repeat;
+      background-size: cover;
+      color: white;
+      box-shadow: 0px 30px 60px -5px #000;
+      /* background-position: */
+      margin-top: 0rem;
+
+
+
+    }
+
+    form {
+      padding-top: 80px;
+    }
+
+    .active {
+      border-bottom: 2px solid #1161ed;
+      font-size: x-large;
+      color: whitesmoke;
+    }
+
+    .nonactive {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    h2 {
+      padding-left: 12px;
+      font-size: 22px;
+      text-transform: uppercase;
+      padding-bottom: 5px;
+      letter-spacing: 2px;
+      display: inline-block;
+      font-weight: 100;
+    }
+
+    h2:first-child {
+      padding-left: 0px;
+    }
+
+    span {
+      text-transform: uppercase;
+      font-size: 12px;
+      opacity: 0.4;
+      display: inline-block;
+      position: relative;
+      top: -65px;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .text {
+      border: none;
+      width: 89%;
+      padding: 10px 20px;
+      display: block;
+      height: 15px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0);
+      overflow: hidden;
+      margin-top: 15px;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .text:focus {
+      outline: 0;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0);
+    }
+
+    .text:focus+span {
+      opacity: 0.6;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      font-family: "Montserrat", sans-serif;
+      color: #fff;
+    }
+
+    input {
+      display: inline-block;
+      padding-top: 20px;
+      font-size: 14px;
+    }
+
+    h2,
+    span,
+    .custom-checkbox {
+      margin-left: 20px;
+    }
+
+    .custom-checkbox {
+      -webkit-appearance: none;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 8px;
+      border-radius: 2px;
+      display: inline-block;
+      position: relative;
+      top: 6px;
+    }
+
+    .custom-checkbox:checked {
+      background-color: rgba(17, 97, 237, 1);
+    }
+
+    .custom-checkbox:checked:after {
+      content: "\2714";
+      font-size: 10px;
+      position: absolute;
+      top: 1px;
+      left: 4px;
+      color: #fff;
+    }
+
+    .custom-checkbox:focus {
+      outline: none;
+    }
+
+    label {
+      display: inline-block;
+      padding-top: 10px;
+      padding-left: 5px;
+    }
+
+    .signin {
+      background-color: #1161ed;
+      color: #fff;
+      width: 100%;
+      padding: 10px 20px;
+      display: block;
+      height: 39px;
+      border-radius: 20px;
+      margin-top: 30px;
+      transition: all 0.5s ease-in-out;
+      border: none;
+      text-transform: uppercase;
+    }
+
+    .signin:hover {
+      background: #4082f5;
+      box-shadow: 0px 4px 35px -5px #4082f5;
+      cursor: pointer;
+    }
+
+    .signin:focus {
+      outline: none;
+    }
+
+    hr {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      top: 85px;
+      position: relative;
+    }
+
+    a {
+      text-align: center;
+      display: block;
+      top: 120px;
+      position: relative;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    @import url("https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600");
+
+    .more-pens {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      z-index: 10;
+    }
+
+    a.white-mode,
+    a.white-mode:link,
+    a.white-mode:visited,
+    a.white-mode:active {
+      font-family: "Montserrat";
+      font-size: 12px;
+      text-decoration: none;
+      background: #212121;
+      padding: 4px 8px;
+      color: #f7f7f7;
+    }
+
+    a.white-mode:hover,
+    a.white-mode:link:hover,
+    a.white-mode:visited:hover,
+    a.white-mode:active:hover {
+      background: #edf3f8;
+      color: #212121;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+
+    }
+
+    #particles {
+      position: relative;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      filter: url("#goo");
+      align-items: center;
+      ;
+    }
+
+    /* .background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+} */
+
+    /* .title {
+  z-index: 10;
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translateX(-50%) translateY(-50%);
+  font-family: "Montserrat";
+  text-align: center;
+  width: 60%;
+}
+.title h1 {
+  position: relative;
+  color: #000000;
+  font-weight: 300;
+  font-size: 60px;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+.title h1 span {
+  font-weight: 600;
+  font-size: 60px;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+.title h3 {
+  font-weight: 200;
+  font-size: 20px;
+  padding: 0;
+  margin: 0;
+  line-height: 2;
+  color: #5e7283;
+  letter-spacing: 2px;
+} */
+
+    .circle {
+      fill: #95e0d6;
+    }
+
+    svg {
+      display: block;
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      transform: translateZ(0px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login">
+    <h2 class="active"> Serkinti Players </h2>
+
+
+
+    <input type="text" class="text" name="Player 1" >
+    <span>Player 1</span>
+
+
+    <br>
+
+    <input type="text" class="text" name="Player 2">
+    <span>Player 2</span>
+    <br>
+
+
+    <button class="signin">
+      Let's Play!
+    </button>
+  </div>
+
+  <div id="particles"></div>
+  <div class="background"></div>
+
+
+
+  <!-- <div class="title">
+    <h3>PLASM.it - 2017</h3>
+    <h1>META<span>BALLS</span></h1>
+  </div> -->
+  <svg>
+    <defs>
+      <filter id="goo">
+        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="12" />
+        <feColorMatrix in="blur" result="colormatrix" type="matrix"
+          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -9" />
+        <feBlend in="SourceGraphic" in2="colormatrix" />
+      </filter>
+    </defs>
+  </svg>
+
+
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+
+
+
+
+
+  
+  <script>
+    $(document).ready(function () {
+      const circle = '<svg viewBox="0 0 67.4 67.4"><circle class="circle" cx="33.7" cy="33.7" r="33.7"/></svg>';
+
+      class Particle {
+
+        constructor(svg, coordinates, friction) {
+          this.svg = svg;
+          this.steps = $(window).height() / 2;
+          this.item = null;
+          this.friction = friction;
+          this.coordinates = coordinates;
+          this.position = this.coordinates.y;
+          this.dimensions = this.render();
+          this.move();
+          this.rotation = Math.random() > 0.5 ? "-" : "+";
+          this.scale = 0.4 + Math.random() * 2;
+          this.siner = $(window).width() / 2.5 * Math.random();
+        }
+        destroy() {
+          this.item.remove();
+        }
+
+        move() {
+          this.position = this.position - this.friction;
+          let top = this.position;
+          let left = this.coordinates.x + Math.sin(this.position * Math.PI / this.steps) * this.siner;
+          this.item.css({
+            transform: "translateX(" + left + "px) translateY(" + top + "px) scale(" + this.scale +
+              ") rotate(" + this.rotation + (this.position + this.dimensions.height) + "deg)"
+          });
+
+
+          if (this.position < -this.dimensions.height) {
+            this.destroy();
+            return false;
+          } else {
+            return true;
+          }
+        }
+
+        render() {
+          this.item = $(this.svg, {
+            css: {
+              transform: "translateX(" + this.coordinates.x + "px) translateY(" + this.coordinates.y + "px)"
+            }
+          });
+
+
+          $("#particles").append(this.item);
+          return {
+            width: this.item.width(),
+            height: this.item.height()
+          };
+
+        }
+      }
+
+
+
+      let isPaused = false;
+      window.onblur = function () {
+        isPaused = true;
+      }.bind(this);
+      window.onfocus = function () {
+        isPaused = false;
+      }.bind(this);
+
+      //-------------------------------
+      let particles = [];
+
+      setInterval(function () {
+        if (!isPaused) {
+          particles.push(
+            new Particle(circle, {
+                "x": Math.random() * $(window).width(),
+                "y": $(window).height() + 100
+              },
+              1 + Math.random()));
+
+        }
+      }, 180);
+
+      function update() {
+        particles = particles.filter(function (p) {
+          return p.move();
+        });
+        requestAnimationFrame(update.bind(this));
+      }
+      update();
+    });
+  </script>
+
+</body>
+
+</html>
