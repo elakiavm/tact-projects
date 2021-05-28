@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    Source:
+
+    https://mdbootstrap.com/docs/b4/jquery/forms/textarea/
+
+    https://www.w3schools.com/bootstrap/tryit.asp?filename=trybs_default&stacked=h
+
+    https://phppot.com/jquery/bouncing-ball-animation-using-jquery/
+
+    https://schier.co/blog/wait-for-user-to-stop-typing-using-javascript
+
+    Balloons
+    https://codepen.io/Jemimaabu/pen/vYEYdOy
+
+  -->
+
+<head>
+  <title>Serkinti</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+  </script>
+
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+
+  <link href="{{ url_for('static', filename='js/plugins/nucleo/css/nucleo.css') }}" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='js/plugins/@fortawesome/fontawesome-free/css/all.min.css') }}"
+    rel="stylesheet" />
+  <!-- CSS Files -->
+  <link href="{{ url_for('static', filename='css/argon-dashboard.css') }}" rel="stylesheet" />
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text&family=Open+Sans:wght@300;400&display=swap"
+    rel="stylesheet">
+
+  <!-- Custom CSS Files -->
+  <link href="{{ url_for('static', filename='css/game.css') }}" rel="stylesheet" />
+
+  <style>
+    /*
+      Only custom styles should come here
+    */
+
+    div.winner_box{
+      /* border: 1px solid red; */
+      margin-left: 1000px;
+      padding-left:200px;
+    }
+
+    /* div.winner_box h1 {
+      margin-left: 1000px;
+      white-space: nowrap;
+      transition: margin 3s;
+    } */
+  </style>
+</head>
+
+<body>
+
+  
+
+  
+
+  <div class="bg-primary mb-4 text-white text-center" style="padding-top: 20px; padding-bottom: 20px;">
+    <h1 class="letter-spac-1 ser_title">Serkinti</h1>
+    <h2>The lexical brawl!</h2>
+  </div>
+
+  <!-- <div class="row winner_box">
+    <h1 id="winner_slide_holder">Something</h1>
+  </div> -->
+
+  <div id="balloon-container">
+  </div>
+  <div class="mx-auto">
+    {% include 'timer.html' %}
+  </div>
+ 
+
+  <div class="container">
+    <div class="row">
+
+
+      <!-- Players' Input Box -->
+      <div class="col-sm-4">
+        <input type="hidden" id="h_game_code" value="{{game_code}}" />
+        <h2 class="text-center" id="user_1_result_title"></h2>
+        <div class="divider mx-auto"></div>
+
+        <div class="text-center mt-4">
+          <div class="form-group">
+            <input type="text" name="" id="user_1_input" class="w-100">
+          </div>
+        </div>
+
+
+        <div class="card shadow mt-3 leaderboard">
+          <div id="player_1_card" class="card-body displayboard text-center">
+
+            <div id="user_1_score"></div>
+            <div id="user_1_bank"></div>
+          </div>
+        </div>
+       
+
+
+      </div>
+      
+      <!--/ Players' Input Box -->
+      
+
+      <!-- Bubble Box -->
+      <div class="col-sm-4">
+        <h3></h3>
+        <div>
+
+          <div id="outterDiv">
+            <!-- <div class="banner-info">Click the ball to see the
+                  bouncing animation</div> -->
+            <!-- <img id="bouncing-ball" src="https://phppot.com/demo/bouncing-ball-animation-using-jquery/bouncing-ball.png"></img> -->
+
+            <div class="circle" id="bouncing-ball">
+              <div id="box_text"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/ Bubble Box -->
+
+      <!-- Result Box -->
+      <div class="col-sm-4 text-center">
+
+        <input type="hidden" id="h_game_code" value="{{game_code}}" />
+        <h2 class="text-center" id="user_2_result_title"></h2>
+        <div class="divider mx-auto"></div>
+
+        <div class="text-center mt-4">
+          <div class="form-group">
+            <input type="text" name="" id="user_2_input" class="w-100">
+          </div>
+        </div>
+
+        <div class="card shadow mt-3 leaderboard">
+          <div id="player_2_card" class="card-body displayboard text-center">
+            <div id="user_2_score"></div>
+            <div id="user_2_bank"></div>
+          </div>
+        </div>
+
+      </div>
+      <!-- Result Box -->
+
+    </div>
+    
+
+    <div class="row">
+
+      <div class="container lobby_button btn btn-secondary">
+        <a href="/lobby" class="button"> Go Lobby</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- <script src="jquery-3.2.1.min.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+<script>
+    // var ser_users = [];
+
+// A $( document ).ready() block.
+$(document).ready(function () {
+
+    // get game code
+    var h_game_code = $('#h_game_code').val();
+
+    // colog('h_game_code : ' + h_game_code);
+
+    get_player_data(h_game_code); // call api and get the player data
+
+    $("#bouncing-ball").hide();
+    
+    function get_player_data(game_code) {
+
+      url = "/api/game/" + game_code
+
+      $.ajax({
+        type: "GET",
+        url: url,
+        // cache: false,
+        success: function (data) {
+
+          // console.log(data);
+
+          var c_players = data['players'];
+
+          var ser_users = [];
+          ser_users.push(c_players['player_1']['name']);
+          ser_users.push(c_players['player_2']['name']);
+
+          update_usernames(ser_users);
+        }
+      });
+    } //- get data
+
+    function update_usernames(ser_users) {
+
+      //user_1_name
+      $('#user_1_name').html(ser_users[0]);
+      $('#user_2_name').html(ser_users[1]);
+
+      $('#user_1_result_title').html(ser_users[0]);
+      $('#user_2_result_title').html(ser_users[1]);
+    }
+
+    var user_score = {
+      'user_1'  : 0,
+      'user_2'  : 0,
+    };
+
+    function bounce(bouncingCount, speed) {
+      var top         = 200;
+      var speedRatio  = speed / top;
+      var heightRatio = top / bouncingCount;
+
+      for (var i = 1; i <= bouncingCount; i++) {
+        
+        $('#bouncing-ball').animate({
+          'bottom': top
+        }, speed);
+
+        $('#bouncing-ball').animate({
+          'bottom': 0
+        }, speed / 2);
+
+        top   = top - (heightRatio);
+        speed = speedRatio * top;
+      }
+    }
+
+    var user_1_bank   = [];
+    var user_2_bank   = [];
+    var user_1_word   = [];
+    var user_2_word   = [];
+    var all_word_bank = [];
+
+    var random_colors = [
+      '#525f7f',
+      '#e6e6fa',
+      '#fff69a',
+      '#e6e6fa',
+      '#c3dcff',
+      '#f08a99',
+      '#7d6fff'
+    ];
+
+    function is_word_available_in_bank(current_word){
+      if (all_word_bank.includes(current_word)){
+        return true;
+      }
+      return false;
+    }
+
+    const show_user_1_bank_table = async (new_word) => {
+
+      user_1_bank.push(new_word);
+      // console.log(new_word);
+
+      if (is_word_available_in_bank(new_word)){
+        // console.log("OUT");
+        $("#box_text").html("OUT");
+        bounce(3, 500);
+        $("#bouncing-ball").show();
+        $('#player_1_card').css('background-color','#424949');
+        $('input').attr('disabled', 'disabled');
+
+        // show user_2 as winner
+        var user_2_name = $('#user_2_result_title').html();
+        show_winner(user_2_name);
+
+        return ;
+      }
+
+      // add user's new word in to bank so we can verify the duplicate
+      all_word_bank.push(new_word);
+
+      url = "/api/get/word/score"
+
+      var h_game_code = $('#h_game_code').val();
+
+      var param = {
+        'word'          : new_word,
+        'game_code'     : h_game_code,
+        'player_index'  : 1
+      };
+
+      await $.ajax({
+        type: "GET",
+        url: url,
+        data: param,
+        // cache: false,
+        success: function (data) {
+
+          // console.log(data);
+          // console.log(data['score'])
+
+          colog('cscore : '+(data['score']));
+          createBalloons(parseInt(data['score']));
+
+          user_score['user_1'] = parseInt(user_score['user_1']) + data['score'];
+
+          $('#user_1_score').html("<h4> Total Score : " + user_score['user_1'] + "</h4>")
+
+          newWordElement =
+            "<button class='my-2 position-absolute btn btn-primary btn-block btn-w-82 box-button transition-2'>" +
+            user_1_bank[user_1_bank.length - 1] + "</button>";
+          // console.log(newWordElement);
+          $("#user_1_bank").append(newWordElement)
+
+          user_1_word.push({
+            score: data['score'],
+            element: $("#user_1_bank").children().last()[0]
+          });
+
+          // console.log($("#user_1_bank").children())
+          // console.log($("#user_1_bank").height());
+
+        }
+      });
+
+      //sort the array 
+      for (let i = 0; i < user_1_word.length - 1; i++) {
+        for (let j = 0; j < user_1_word.length - i - 1; j++) {
+
+          if (user_1_word[j].score < user_1_word[j + 1].score) {
+
+            var temp            = user_1_word[j];
+            user_1_word[j]      = user_1_word[j + 1];
+            user_1_word[j + 1]  = temp;
+
+          }
+        }
+      }
+
+      reposition();
+
+    }
+
+
+    const show_user_2_bank_table = async (new_word) => {
+
+      user_2_bank.push(new_word);
+
+      if (is_word_available_in_bank(new_word)){
+        // console.log("OUT");
+        $("#box_text").html("OUT");
+        bounce(3, 500);
+        $("#bouncing-ball").show();
+        $('#player_2_card').css('background-color','#424949');
+        $('input').attr('disabled', 'disabled');
+
+        // show user_1 as winner
+        var user_1_name = $('#user_1_result_title').html();
+        show_winner(user_1_name);
+
+        return;
+      }
+
+      // add user's new word in to bank so we can verify the duplicate
+      all_word_bank.push(new_word);
+
+      url = "/api/get/word/score";
+
+      var h_game_code = $('#h_game_code').val();
+
+      var param = {
+        'word'          : new_word,
+        'game_code'     : h_game_code,
+        'player_index'  : 2
+      };
+
+      await $.ajax({
+        type  : "GET",
+        url   : url,
+        data  : param,
+
+        success: function (data) {
+
+          // colog('cscore : '+(data['score']));
+          createBalloons(parseInt(data['score']));
+
+          user_score['user_2'] = parseInt(user_score['user_2']) + data['score'];
+
+          $('#user_2_score').html("<h4> Total Score : " + user_score['user_2'] + "</h4>")
+
+          newWordElement =
+            "<button class='my-2 position-absolute btn btn-primary btn-block btn-w-82 box-button transition-2'>" +
+            user_2_bank[user_2_bank.length - 1] + "</button>";
+          // console.log(newWordElement);
+          $("#user_2_bank").append(newWordElement)
+
+          user_2_word.push({
+            score: data['score'],
+            element: $("#user_2_bank").children().last()[0]
+          });
+        }
+      });
+
+      //sort the array 
+
+      for (let i = 0; i < user_2_word.length - 1; i++) {
+        for (let j = 0; j < user_2_word.length - i - 1; j++) {
+
+          if (user_2_word[j].score < user_2_word[j + 1].score) {
+
+            var temp            = user_2_word[j];
+            user_2_word[j]      = user_2_word[j + 1];
+            user_2_word[j + 1]  = temp;
+          }
+        }
+      }
+
+      var height = $(".btn-block").height() + Number($(".btn-block").css('margin-top').replace("px", "")) + 20;
+      // console.log( Number($(".btn-block").css('margin-top').replace("px", "")) )
+      // const words_1_array = $("#user_1_bank").children();
+      var y = height;
+      for (var i = 0; i < user_2_word.length; i++) {
+        const elem = user_2_word[i].element
+        // console.log(elem)
+        $(elem).css("top", y + "px");
+        y += height;
+      }
+    }
+
+    // $("#bouncing-ball").click(function() {
+    // 	// bounce(10, 500);
+    // });
+
+    function reposition() {
+      var height = $(".btn-block").height() + Number($(".btn-block").css('margin-top').replace("px", "")) + 20;
+
+      var y = height;
+      for (var i = 0; i < user_1_word.length; i++) {
+        const elem = user_1_word[i].element
+        // console.log(elem)
+        $(elem).css("top", y + "px");
+        y += height;
+      }
+    }
+
+    function hide_ball() {
+      $("#bouncing-ball").hide();
+    }
+
+    function show_ball() {
+      $("#bouncing-ball").show();
+    }
+
+    // User 1 Handler
+    // Get the input box
+    let dom_user_1_input = document.getElementById('user_1_input');
+
+    // Find User finished typing
+    // Init a timeout variable to be used below
+    let dom_user_1_timeout = null;
+
+    // Listen for keystroke events
+    dom_user_1_input.addEventListener('keyup', function (e) {
+
+      if (e.code === 'Enter') {
+        // console.log("user 1 text")
+        add_user_text(1);
+        $('#user_2_input').focus()
+      }
+    });
+
+    // User 2 Handler
+    // Get the input box
+    let dom_user_2_input = document.getElementById('user_2_input');
+
+    // Find User finished typing
+    // Init a timeout variable to be used below
+    let dom_user_2_timeout = null;
+
+    // Listen for keystroke events
+    dom_user_2_input.addEventListener('keyup', function (e) {
+
+      if (e.code === 'Enter') {
+        // console.log("user 2 text")
+        add_user_text(2);
+        $("#user_1_input").focus();
+      }
+    });
+
+    function get_random_number(min, max) {
+      var rand_int = Math.floor(Math.random() * max);
+      return rand_int;
+    }
+
+    function change_bubble() {
+      var random_color = get_random_number(0, random_colors.length - 1);
+      $('.circle').css("background-color", random_colors[random_color]);
+
+      var bubble_random_factor  = get_random_number(1, 6);
+
+      var bubble_width          = (bubble_random_factor * 50);
+      var bubble_height         = (bubble_random_factor * 50);
+
+      $('.circle').css("width", (bubble_width + 'px'));
+      $('.circle').css("height", (bubble_height + 'px'));
+
+      // colog(bubble_height);
+    }
+
+    function colog(content) {
+      console.log(content);
+    }
+
+    function add_user_text(user_index) {
+      var current_user_word = $('#user_' + user_index + '_input').val();
+      if (current_user_word.length < 3) {
+        return;
+      }
+
+      $("#box_text").html(current_user_word);
+      bounce(3, 500);
+      $("#bouncing-ball").show();
+
+      var current_user_word = $('#user_' + user_index + '_input').val()
+      $("#box_text").html(current_user_word);
+      bounce(3, 500);
+      $("#bouncing-ball").show();
+
+      change_bubble();
+
+      // update user bank
+      if (user_index == 1) {
+        show_user_1_bank_table(current_user_word);
+      } else if (user_index == 2) {
+        show_user_2_bank_table(current_user_word);
+      }
+    }
+
+    $('#user_1_input').focus(function () {
+      $(this).val('');
+    });
+
+    $('#user_2_input').focus(function () {
+      $(this).val('');
+    });
+
+    function random(num) {
+      return Math.floor(Math.random() * num)
+    }
+
+    // TODO: Not sure whether we need this script; Will have to analyze later
+    function get_score_level(score){
+      if(score < 20){
+        return 1;
+      }
+      
+      if(score < 40){
+        return 2;
+      }
+
+      if(score < 60){
+        return 3;
+      }
+
+      if(score < 80){
+        return 4;
+      }
+
+      if(score < 100){
+        return 5;
+      }
+
+      return 6;
+    }
+
+    function getRandomStyles() {
+
+      var r   = random(255);
+      var g   = random(255);
+      var b   = random(255);
+      var mt  = random(200);
+      var ml  = random(50);
+      var dur = random(5) + 5;
+      
+      return `
+      background-color: rgba(${r},${g},${b},0.7);
+      color: rgba(${r},${g},${b},0.7); 
+      box-shadow: inset -7px -3px 10px rgba(${r-10},${g-10},${b-10},0.7);
+      margin: ${mt}px 0 0 ${ml}px;
+      animation: float ${dur}s ease-in infinite
+      `
+    }
+
+    function createBalloons(num) {
+
+      if(num < 70){
+        return;
+      }
+      
+      $('#balloon-container').show();
+
+      var balloonContainer = $("#balloon-container");
+      // console.log("one balloon created");
+      for (var i = num; i > 0; i--) {
+        // console.log( i + "this is current iteration");
+        var balloon = document.createElement("div");
+        balloon.className = "balloon";
+        balloon.style.cssText = getRandomStyles();
+        balloonContainer.append(balloon);
+      }
+
+      setTimeout(hideBalloonContainer, 2000);
+    }
+
+    function hideBalloonContainer(){
+        $('#balloon-container').hide(2000);
+
+        // console.log('Contianer hidden');
+    }
+
+   // window.onload = function () {
+   //   createBalloons(100);
+   // }
+
+
+   function show_winner(winner_name){
+        
+      $('h1#winner_slide_holder').html(winner_name);
+
+      $("h1").css("margin-left", "10px");
+      // $("h2").css("margin-left", ($("body").width() - $("h2").width()) + "px");
+    }
+});
+</script>
+
+
+</body>
+
+</html>

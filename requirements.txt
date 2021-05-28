@@ -1,0 +1,9 @@
+flask
+click==7.1.2
+BeautifulSoup4
+gunicorn
+numpy
+gensim
+scipy
+spacy
+redis

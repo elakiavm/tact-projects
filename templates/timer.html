@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+{% block timer  %}
+    
+
+<html>
+<head>
+
+<meta charset="UTF-8">
+<title>StopWatch</title>
+
+<meta name="viewport" content="width=device-width">
+<!-- <link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/style.css"> -->
+
+<link href="{{ url_for('static', filename='css/reset.css') }}" rel="stylesheet" />
+<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+
+	<script>
+		window.console = window.console || function(t) {};
+		window.open = function(){ console.log('window.open is disabled.'); };
+		window.print = function(){ console.log('window.print is disabled.'); };
+		if (false) {
+		  window.ontouchstart = function(){};
+		}
+	</script>
+
+</head>
+
+<style>
+    .image-container {
+        width: 355px;
+        height: 305px;
+        margin: auto;
+        padding: 15px 10px;
+        min-height: 100vh;
+    }
+    
+    img {
+        margin-top: 10px;
+        max-width: 100%;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .c-stopwatch {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .c-stopwatch:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+    
+    .c-stopwatch__time-wrap {
+        color: #000;
+        font-size: 40px;
+    }
+    
+    @media only screen and (min-width: 37.5em) and (max-width: 64em) {
+        .c-stopwatch__time-wrap {
+            font-size: 40px;
+        }
+    }
+    
+    @media only screen and (max-width: 37.438em) {
+        .c-stopwatch__time-wrap {
+            font-size: 40px;
+        }
+    }
+    
+    .c-stopwatch__btn {
+        text-align: center;
+        float: left;
+        border-radius: 50%;
+        margin-right: 10px;
+        outline: none;
+        height: 65px;
+        width: 65px;
+        font-size: 18px;
+        color: #fff;
+        border: none;
+    }
+    
+    @media only screen and (max-width: 37.438em) {
+        .c-stopwatch__btn {
+            height: 65px;
+            width: 65px;
+            /* line-height: 80px; */
+        }
+    }
+    
+    .c-stopwatch__btn:hover {
+        background: #000;
+        transition-duration: 0.5s;
+    }
+    
+    .c-stopwatch__btn--start {
+        background-color: #17a69d;
+    }
+    
+    .c-stopwatch__btn--pause {
+        background-color: #fb647f;
+    }
+    
+    .c-stopwatch__btn--reset {
+        background-color: #4387d0;
+    }
+    
+    .c-stopwatch__btn--lead {
+        background: #19736b;
+        border: 2px solid #fff;
+        height: 40px;
+        width: 40px;
+        font-size: 17px;
+        /* line-height: 17px; */
+        color: #fff;
+        opacity: 0.9;
+        position: absolute;
+        top: 10px;
+        left: 0;
+    }
+    
+    @media only screen and (max-width: 37.438em) {
+        .c-stopwatch__btn--lead {
+            top: 0;
+        }
+    }
+    
+    .c-stopwatch__btn--setBeep {
+        color: #556bb5;
+        margin-left: 50px;
+        margin-top: 40px;
+    }
+    
+    @media only screen and (max-width: 37.438em) {
+        .c-stopwatch__btn--setBeep {
+            margin-left: 0;
+            margin-top: 10px;
+        }
+    }
+    
+    .c-stopwatch__btn--setBeep:active {
+        color: #b31760;
+    }
+    
+    .c-stopwatch__btn:disabled {
+        border: 1px solid #aaa;
+        color: #aaa !important;
+        background: none !important;
+        cursor: not-allowed;
+    }
+</style>
+
+
+
+<body>
+
+        <div id="page-wrap top">
+            <section id="four" class="collout bg_white">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="row">
+                                <div class="main-content-div">
+                                    <script>
+                                        window.TAD = window.TAD || {};
+                                        TAD.abtest = 'b';
+                                    </script>
+                                    <div data-bind="visible:true">
+                                        <script type="text/template" id="tpl-split-item-template">
+                                            <div class="fadeInLeft c-splitlist__record" data-bind="{css: $parent.resolveItemClass(getType()), visible: (getType() !== 'start' || $parent.detailsVisible() )}">
+                                                <div class="c-splitlist__col c-splitlist__col--index" data-bind="{text:(getType() !== 'start' ? '#'+ $parent.getSplitIndex($data) : '')}"></div>
+                                                <div class="c-splitlist__col c-splitlist__col--label" data-bind="{visible: $parent.detailsVisible}"><input type="text" data-bind="value:_label, element:inputElement, hasFocus: hasFocus" autocomplete="false" /></div>
+                                                <div class="c-splitlist__col c-splitlist__col--splitTime" data-bind="{text:(getType() === 'start' ? '---' : $parent.formatTime(getIntervalTime()))}"></div>
+                                                <div class="c-splitlist__col c-splitlist__col--shortLabel" data-bind="{visible: ! $parent.detailsVisible(),text: _label}"></div>
+                                                <div class="c-splitlist__col c-splitlist__col--totalTime" data-bind="{visible: $parent.detailsVisible, text:(getType() === 'start' ? '---' : $parent.formatTime($parent.getTotalTime($data)))}"></div>
+                                                <div class="c-splitlist__col c-splitlist__col--actualDate" data-bind="{text:$parent.formatActualDate(getActualDate()), visible: $parent.detailsVisible}"></div>
+                                                <div class="c-splitlist__col c-splitlist__col--remove" data-bind="{visible: $parent.detailsVisibless}">
+                                                    <button data-bind="click: $parent.splits.removeItem, visible: $parent.allowRemove($data, $index)">
+                                                        <i class="i-font i-close"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </script>
+                                        <script type="text/template" id="tpl-alarm-item-template">
+                                            <div class="form-row">
+                                                <div class="left"><label data-bind="if:$index() === 0">Hours:</label><input type="text" maxlength="2" size="4" data-bind="textInput: hours, enable: $parent.config.onceAlarmEnabled()"></div>
+                                                <div class="left"><label data-bind="if:$index() === 0" style="padding-left: 14pt;">Minutes:</label><span class="fld-aid">&ensp;</span><input type="text" maxlength="2" size="4" data-bind="textInput: minutes, enable: $parent.config.onceAlarmEnabled()"></div>
+                                                <div class="left"><label data-bind="if:$index() === 0" style="padding-left: 14pt;">Seconds:</label><span class="fld-aid">&ensp;</span><input type="text" maxlength="2" size="4" data-bind="textInput: seconds, enable: $parent.config.onceAlarmEnabled()"></div>
+                                                <div class="left"><label data-bind="if:$index() === 0">&nbsp;</label><span class="fld-aid">&ensp;</span><select data-bind="options: $parent.config.sounds, selectedOptions: sound, optionsText: 'name', value: sound, enable: $parent.config.onceAlarmEnabled()"></select>
+                                                    <span data-bind="if:$parent.hasSoundSupport"><a href="#" class="sound-test" data-bind="click: function(data, event){$parent.config.testSound(sound())}, clickBubble: false"><i class="i-font">&#xe033;</i> Soundcheck</a></span>
+                                                    <span data-bind="ifnot:$parent.hasSoundSupport"><i class="i-font">&#xe001;</i> No sound support</span>
+                                                </div>
+                                                <div class="left c-alarm__removeBox"><label data-bind="if:$index() === 0">&nbsp;</label><a href="#" class="c-alarm--remove" data-bind="click: $parent.alarms.removeItem, clickBubble: false"><i class="i-font i-close"> </i></a></div>
+                                            </div>
+    
+                                        </script>
+                                        <section class="tool__wrap pdflexi" data-tad-control="tadStopwatch">
+                                            <div class="c-fullScreenWrapper" data-bind="css:{ &#39;c-fullScreenWrapper--inFullScreenMode&#39; : inFullScreenMode }">
+                                                <div class="logo-overlay" style="">
+                                                </div>
+                                                <div class="tool__inner">
+                                                    <div class="tool__main pdflexi">
+                                                        <!-- <button type="button" class="c-fullScreenButton btn btn-sm" data-bind="click: toggleFullScreenMode">
+                                                            <span data-bind="{text:(inFullScreenMode() ? &#39;Exit Fullscreen &#39; : &#39;Fullscreen&#39;)}">
+                                                                Fullscreen
+                                                            </span>
+                                                            <i class="i-font i-fullscreen" data-bind="{css:(inFullScreenMode() ? &#39;i-fullscreen_exit&#39; : &#39;i-fullscreen&#39;)}"></i>
+                                                        </button> -->
+                                                        <div class="c-stopwatch">
+                                                            <div data-bind="css:{ &#39;fixed&#39; : !inFullScreenMode() }" class="fixed">
+                                                                <div class="c-stopwatch__time-wrap" data-bind="style:{ fontSize: inFullScreenMode() ? winWidth() + &#39;px&#39; : &#39;&#39; }" style=""><span class="c-stopwatch__time" data-bind="text: formattedMainTime">00:00:00.0</span><span class="c-stopwatch__milli-time" style="font-size:.3em;" data-bind="text: mainTimeExtract">00</span></div>
+                                                                <!-- <div class="c-stopwatch__split fadeInDown" data-bind="{text: formattedSplitTime, style:{ fontSize: inFullScreenMode() ? winWidth()/4 + &#39;px&#39; : &#39;&#39; }}" style="">SPLIT TIME</div> -->
+                                                            </div>
+                                                            <div class="pdflexi pr">
+                                                                <button type="button" class="c-stopwatch__btn fadeIn c-stopwatch__btn--start" data-bind="{click: startStopButton.startStop, css: (isMainRunning() ? &#39;c-stopwatch__btn--pause&#39; : &#39;c-stopwatch__btn--start&#39;), text:(startStopButton.isOn() ? &#39;Pause&#39; : &#39;Start&#39;)}">
+                                                                    Start
+                                                                </button>
+    
+                                                                <button type="button" class="c-stopwatch__btn c-stopwatch__btn--lead fadeIn" data-bind="{visible: !isLeadDisabled(), text: leadTime}" style="display: none;">\
+                                                                    -3
+                                                                </button>
+    
+                                                                <!-- <button type="button" class="c-stopwatch__btn c-stopwatch__btn--split fadeIn" data-bind="click: splitMainTime, enable: isMainRunning" disabled="">
+                                                                    Split
+                                                                </button> -->
+    
+                                                                <button type="button" class="c-stopwatch__btn c-stopwatch__btn--reset fadeIn" data-bind="click: resetMainTime, enable: !isMainRunning() &amp;&amp; splits.list().length &gt; 1" disabled="">
+                                                                    Reset
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <div class="pdflexi fadeIn c-splitlist__wrap" data-bind="visible: splits.list().length &gt; 1" style="display: none;">
+                                                            <div class="row">
+                                                                <button type="button" class="c-showDetailsButton btn btn-sm" data-bind="click: toggleDetailsVisible">
+                                                                    <i class="i-font i-expand_more" data-bind="{css:(detailsVisible() ? &#39;i-expand_less&#39; : &#39;i-expand_more&#39;)}"></i> &nbsp;<span data-bind="{text:(detailsVisible() ? &#39;Show less detail&#39; : &#39;Show more detail&#39;)}">Show more detail</span></button>
+                                                                <button
+                                                                    type="button" class="c-reverseListButton btn btn-sm" data-bind="click: config.toggleReverseList"><i class="i-font " data-bind="{css:(config.reverseList() ? &#39;&#39; : &#39;&#39;)}"></i> &nbsp;Reverse order </button>
+                                                            </div>
+                                                            <div class="c-splitlist">
+                                                                <div class="c-splitlist__header" data-bind="{visible: detailsVisible}" style="display: none;">
+                                                                    <div class="c-splitlist__col c-splitlist__col--index">&nbsp;</div>
+                                                                    <div class="c-splitlist__col c-splitlist__col--label" data-bind="{visible: detailsVisible}" style="display: none;">Label</div>
+                                                                    <div class="c-splitlist__col c-splitlist__col--splitTime" data-bind="{text:(detailsVisible() ? &#39;Interval&#39; : &#39;&#39;)}"></div>
+                                                                    <div class="c-splitlist__col c-splitlist__col--totalTime" data-bind="{visible: detailsVisible}" style="display: none;">Total</div>
+                                                                    <div class="c-splitlist__col c-splitlist__col--actualDate" data-bind="{visible: detailsVisible}" style="display: none;">Time Recorded</div>
+                                                                    <div class="c-splitlist__col c-splitlist__col--remove" data-bind="{visible: detailsVisible}" style="display: none;">&nbsp;</div>
+                                                                </div>
+                                                                <div data-bind="ifnot:config.reverseList">
+                                                                    <div class="c-splitlist__records" data-bind="template: { name: &#39;tpl-split-item-template&#39;, foreach: splits.list.slice(0) }">
+                                                                    </div>
+                                                                </div>
+                                                                <div data-bind="if:config.reverseList"></div>
+                                                            </div>
+    
+                                                        </div> -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </section>
+    
+            </div>
+    
+
+
+            <script src="/static/js/customstoper.js"></script>
+            <script src="/static/js/wcommon_133.js"></script>
+            <script src="/static/js/knockout-3.2.0.js"></script>
+            <script src="/static/js/tadstopwatch_13.js"></script>
+            <script src="/static/js/jquery.min.js"></script>
+            <script src="/static/js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>
+
+{% endblock  %}
